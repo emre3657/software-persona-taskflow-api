@@ -15,6 +15,11 @@ export interface RotateRefreshTokenData {
   expiresAt: Date;
 }
 
+export type RefreshTokenInvalidationReason = Exclude<
+  RefreshTokenRevokeReason,
+  "rotated"
+>;
+
 export interface RefreshTokenRepository {
   findByTokenHash(tokenHash: string): Promise<RefreshToken | null>;
 
@@ -25,15 +30,18 @@ export interface RefreshTokenRepository {
     data: RotateRefreshTokenData,
   ): Promise<RefreshToken | null>;
 
-  revokeById(id: string, reason: RefreshTokenRevokeReason): Promise<boolean>;
+  revokeById(
+    id: string,
+    reason: RefreshTokenInvalidationReason,
+  ): Promise<boolean>;
 
   revokeActiveByFamily(
     tokenFamilyId: string,
-    reason: RefreshTokenRevokeReason,
+    reason: RefreshTokenInvalidationReason,
   ): Promise<number>;
 
   revokeActiveByUser(
     userId: string,
-    reason: RefreshTokenRevokeReason,
+    reason: RefreshTokenInvalidationReason,
   ): Promise<number>;
 }
