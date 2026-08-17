@@ -1,4 +1,4 @@
-import type { CookieOptions, Response } from "express";
+import type { CookieOptions, Request, Response } from "express";
 
 export const REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
 
@@ -37,4 +37,10 @@ export function clearRefreshTokenCookie(
     REFRESH_TOKEN_COOKIE_NAME,
     createBaseCookieOptions(secure),
   );
+}
+
+export function getRefreshTokenCookie(request: Request): string | undefined {
+  const value = request.cookies?.[REFRESH_TOKEN_COOKIE_NAME];
+
+  return typeof value === "string" ? value : undefined;
 }
