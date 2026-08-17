@@ -1,4 +1,4 @@
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
 
 import type {
   GeneratedRefreshToken,
@@ -15,6 +15,10 @@ export class CryptoRefreshTokenService implements RefreshTokenService {
       rawToken,
       tokenHash: this.hash(rawToken),
     };
+  }
+
+  generateFamilyId(): string {
+    return randomUUID();
   }
 
   hash(rawToken: string): string {

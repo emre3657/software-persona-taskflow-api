@@ -6,5 +6,7 @@ export interface GeneratedRefreshToken {
 export interface RefreshTokenService {
   generate(): GeneratedRefreshToken;
 
+  generateFamilyId(): string;
+
   hash(rawToken: string): string;
 }
