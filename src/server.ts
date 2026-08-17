@@ -1,13 +1,19 @@
 import { createApp } from "./app.js";
+import { createCompositionRoot } from "./composition-root.js";
 import { env } from "./config/env.js";
+
 import { connectToDatabase } from "./infrastructure/database/sql-server.js";
 import { logger } from "./infrastructure/logger/logger.js";
 
 async function startServer(): Promise<void> {
   try {
-    await connectToDatabase();
+    const pool = await connectToDatabase();
 
-    const app = createApp();
+    const compositionRoot = createCompositionRoot(pool);
+
+    const app = createApp({
+      authRouter: compositionRoot.authRouter,
+    });
 
     app.listen(env.PORT, () => {
       logger.info(
@@ -20,6 +26,7 @@ async function startServer(): Promise<void> {
     });
   } catch (error) {
     logger.fatal({ err: error }, "Application failed to start");
+
     process.exit(1);
   }
 }
