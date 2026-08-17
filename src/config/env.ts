@@ -23,6 +23,17 @@ const envSchema = z.object({
   DB_PASSWORD: z.string().min(1),
   DB_ENCRYPT: booleanString,
   DB_TRUST_SERVER_CERTIFICATE: booleanString,
+
+  JWT_ACCESS_SECRET: z.string().min(32),
+  JWT_ACCESS_EXPIRES_IN_SECONDS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(900),
+
+  REFRESH_TOKEN_EXPIRES_IN_DAYS: z.coerce.number().int().positive().default(30),
+
+  BCRYPT_SALT_ROUNDS: z.coerce.number().int().min(10).max(14).default(12),
 });
 
 const result = envSchema.safeParse(process.env);

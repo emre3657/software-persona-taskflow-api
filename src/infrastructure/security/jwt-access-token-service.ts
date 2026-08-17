@@ -1,5 +1,4 @@
 import * as jwt from "jsonwebtoken";
-import type { SignOptions } from "jsonwebtoken";
 
 import type {
   AccessTokenClaims,
@@ -15,7 +14,7 @@ function isUserRole(value: unknown): value is UserRole {
 export class JwtAccessTokenService implements AccessTokenService {
   constructor(
     private readonly secret: string,
-    private readonly expiresIn: SignOptions["expiresIn"] = "15m",
+    private readonly expiresInSeconds = 900,
   ) {}
 
   sign(claims: AccessTokenClaims): string {
@@ -27,7 +26,7 @@ export class JwtAccessTokenService implements AccessTokenService {
       this.secret,
       {
         algorithm: "HS256",
-        expiresIn: this.expiresIn,
+        expiresIn: this.expiresInSeconds,
         subject: claims.sub,
       },
     );
