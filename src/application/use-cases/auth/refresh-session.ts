@@ -54,6 +54,12 @@ export class RefreshSession {
       throw new UnauthenticatedError("Invalid refresh token.");
     }
 
+    const accessToken = this.accessTokenService.sign({
+      sub: user.id,
+      username: user.username,
+      role: user.role,
+    });
+
     const generatedRefreshToken = this.refreshTokenService.generate();
 
     const expiresAt = new Date(
@@ -76,12 +82,6 @@ export class RefreshSession {
 
       throw new UnauthenticatedError("Invalid refresh token.");
     }
-
-    const accessToken = this.accessTokenService.sign({
-      sub: user.id,
-      username: user.username,
-      role: user.role,
-    });
 
     return {
       user: {

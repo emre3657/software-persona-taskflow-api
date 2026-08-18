@@ -16,6 +16,12 @@ export class AuthSessionIssuer {
   ) {}
 
   async issue(user: User): Promise<AuthSession> {
+    const accessToken = this.accessTokenService.sign({
+      sub: user.id,
+      username: user.username,
+      role: user.role,
+    });
+
     const generatedRefreshToken = this.refreshTokenService.generate();
 
     const tokenFamilyId = this.refreshTokenService.generateFamilyId();
@@ -29,12 +35,6 @@ export class AuthSessionIssuer {
       tokenFamilyId,
       tokenHash: generatedRefreshToken.tokenHash,
       expiresAt,
-    });
-
-    const accessToken = this.accessTokenService.sign({
-      sub: user.id,
-      username: user.username,
-      role: user.role,
     });
 
     return {
