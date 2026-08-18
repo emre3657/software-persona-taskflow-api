@@ -21,4 +21,6 @@ export interface ProjectMemberRepository {
   remove(projectId: string, userId: string): Promise<boolean>;
 
   countManagers(projectId: string): Promise<number>;
+
+  hasAssignedTasks(projectId: string, userId: string): Promise<boolean>;
 }
