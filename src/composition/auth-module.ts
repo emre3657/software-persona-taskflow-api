@@ -12,8 +12,9 @@ import { LogoutUser } from "../application/use-cases/auth/logout-user.js";
 import { RefreshSession } from "../application/use-cases/auth/refresh-session.js";
 import { RegisterUser } from "../application/use-cases/auth/register-user.js";
 
-import { SqlServerRefreshTokenRepository } from "../infrastructure/repositories/sql-server-refresh-token-repository.js";
 import { SqlServerUserRepository } from "../infrastructure/repositories/sql-server-user-repository.js";
+import { SqlServerRegistrationRepository } from "../infrastructure/repositories/sql-server-registration-repository.js";
+import { SqlServerRefreshTokenRepository } from "../infrastructure/repositories/sql-server-refresh-token-repository.js";
 
 import { BcryptPasswordHasher } from "../infrastructure/security/bcrypt-password-hasher.js";
 import { CryptoRefreshTokenService } from "../infrastructure/security/crypto-refresh-token-service.js";
@@ -32,6 +33,8 @@ export interface AuthModule {
 
 export function createAuthModule(pool: ConnectionPool): AuthModule {
   const userRepository = new SqlServerUserRepository(pool);
+
+  const registrationRepository = new SqlServerRegistrationRepository(pool);
 
   const refreshTokenRepository = new SqlServerRefreshTokenRepository(pool);
 
@@ -53,8 +56,11 @@ export function createAuthModule(pool: ConnectionPool): AuthModule {
 
   const registerUser = new RegisterUser(
     userRepository,
+    registrationRepository,
     passwordHasher,
-    authSessionIssuer,
+    accessTokenService,
+    refreshTokenService,
+    env.REFRESH_TOKEN_EXPIRES_IN_DAYS,
   );
 
   const loginUser = new LoginUser(
