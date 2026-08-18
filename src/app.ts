@@ -15,6 +15,7 @@ import { notFoundHandler } from "./presentation/http/middleware/not-found-handle
 
 export interface CreateAppOptions {
   authRouter: Router;
+  projectRouter: Router;
 }
 
 export function createApp(options: CreateAppOptions): Express {
@@ -35,6 +36,7 @@ export function createApp(options: CreateAppOptions): Express {
   });
 
   app.use("/api/v1/auth", options.authRouter);
+  app.use("/api/v1/projects", options.projectRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

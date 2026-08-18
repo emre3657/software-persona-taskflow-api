@@ -13,6 +13,7 @@ async function startServer(): Promise<void> {
 
     const app = createApp({
       authRouter: compositionRoot.authRouter,
+      projectRouter: compositionRoot.projectRouter,
     });
 
     app.listen(env.PORT, () => {
