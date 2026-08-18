@@ -20,8 +20,13 @@ export const registerBodySchema = z.object({
     .string()
     .trim()
     .toLowerCase()
-    .email("Email address is invalid.")
-    .max(254, "Email must not exceed 254 characters."),
+    .pipe(
+      z
+        .email({
+          error: "Enter a valid email address.",
+        })
+        .max(254, "Email must be at most 254 characters."),
+    ),
 
   password: passwordSchema,
 });
