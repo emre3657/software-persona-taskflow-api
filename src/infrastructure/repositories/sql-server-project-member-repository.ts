@@ -1,14 +1,15 @@
 import mssql from "mssql";
+
 import type {
   AddProjectMemberData,
   ProjectMemberDetails,
   ProjectMemberRepository,
 } from "../../domain/repositories/project-member-repository.js";
+
 import type {
   ProjectMember,
   ProjectRole,
 } from "../../domain/entities/project-member.js";
-import { connectToDatabase } from "../database/sql-server.js";
 
 interface ProjectMemberRow {
   ProjectId: string;
@@ -42,13 +43,13 @@ function mapProjectMemberDetails(
 }
 
 export class SqlServerProjectMemberRepository implements ProjectMemberRepository {
+  constructor(private readonly pool: mssql.ConnectionPool) {}
+
   async findRole(
     projectId: string,
     userId: string,
   ): Promise<ProjectRole | null> {
-    const pool = await connectToDatabase();
-
-    const result = await pool
+    const result = await this.pool
       .request()
       .input("projectId", mssql.UniqueIdentifier, projectId)
       .input("userId", mssql.UniqueIdentifier, userId).query<{
@@ -64,9 +65,7 @@ export class SqlServerProjectMemberRepository implements ProjectMemberRepository
   }
 
   async findAll(projectId: string): Promise<ProjectMemberDetails[]> {
-    const pool = await connectToDatabase();
-
-    const result = await pool
+    const result = await this.pool
       .request()
       .input("projectId", mssql.UniqueIdentifier, projectId)
       .query<ProjectMemberDetailsRow>(`
@@ -88,9 +87,7 @@ export class SqlServerProjectMemberRepository implements ProjectMemberRepository
   }
 
   async add(data: AddProjectMemberData): Promise<ProjectMember> {
-    const pool = await connectToDatabase();
-
-    const result = await pool
+    const result = await this.pool
       .request()
       .input("projectId", mssql.UniqueIdentifier, data.projectId)
       .input("userId", mssql.UniqueIdentifier, data.userId)
@@ -125,9 +122,7 @@ export class SqlServerProjectMemberRepository implements ProjectMemberRepository
   }
 
   async remove(projectId: string, userId: string): Promise<boolean> {
-    const pool = await connectToDatabase();
-
-    const result = await pool
+    const result = await this.pool
       .request()
       .input("projectId", mssql.UniqueIdentifier, projectId)
       .input("userId", mssql.UniqueIdentifier, userId).query(`
@@ -140,9 +135,7 @@ export class SqlServerProjectMemberRepository implements ProjectMemberRepository
   }
 
   async countManagers(projectId: string): Promise<number> {
-    const pool = await connectToDatabase();
-
-    const result = await pool
+    const result = await this.pool
       .request()
       .input("projectId", mssql.UniqueIdentifier, projectId).query<{
       ManagerCount: number;
@@ -157,9 +150,7 @@ export class SqlServerProjectMemberRepository implements ProjectMemberRepository
   }
 
   async hasAssignedTasks(projectId: string, userId: string): Promise<boolean> {
-    const pool = await connectToDatabase();
-
-    const result = await pool
+    const result = await this.pool
       .request()
       .input("projectId", mssql.UniqueIdentifier, projectId)
       .input("userId", mssql.UniqueIdentifier, userId).query<{
