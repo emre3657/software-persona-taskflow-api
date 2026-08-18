@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 export const projectMemberParamsSchema = z.object({
-  projectId: z.uuid({ error: "Project ID must be a valid UUID." }),
-  userId: z.uuid({ error: "User ID must be a valid UUID." }),
+  projectId: z.guid({ error: "Project ID must be a valid UUID." }),
+  userId: z.guid({ error: "User ID must be a valid UUID." }),
 });
 
 export const addProjectMemberBodySchema = z.object({
-  userId: z.uuid({ error: "User ID must be a valid UUID." }),
+  userId: z.guid({ error: "User ID must be a valid UUID." }),
   projectRole: z.enum(["member", "manager"]).default("member"),
 });
 
