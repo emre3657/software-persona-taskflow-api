@@ -1,5 +1,4 @@
-import type { Request, Response } from "express";
-
+import type { RequestHandler, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import type { AuthSession } from "../../../application/dtos/auth-session.js";
@@ -34,13 +33,13 @@ export class AuthController {
   ) {}
 
   private sendAuthSession(
-    response: Response,
+    res: Response,
     statusCode: number,
     session: AuthSession,
   ): void {
-    setRefreshTokenCookie(response, session.refreshToken, this.cookieConfig);
+    setRefreshTokenCookie(res, session.refreshToken, this.cookieConfig);
 
-    response.status(statusCode).json({
+    res.status(statusCode).json({
       data: {
         user: session.user,
         accessToken: session.accessToken,
@@ -48,25 +47,25 @@ export class AuthController {
     });
   }
 
-  register = async (request: Request, response: Response): Promise<void> => {
-    const body = registerBodySchema.parse(request.body);
+  readonly register: RequestHandler = async (req, res): Promise<void> => {
+    const body = registerBodySchema.parse(req.body);
 
     const session = await this.registerUser.execute(body);
 
-    this.sendAuthSession(response, StatusCodes.CREATED, session);
+    this.sendAuthSession(res, StatusCodes.CREATED, session);
   };
 
-  login = async (request: Request, response: Response): Promise<void> => {
-    const body = loginBodySchema.parse(request.body);
+  readonly login: RequestHandler = async (req, res): Promise<void> => {
+    const body = loginBodySchema.parse(req.body);
 
     const session = await this.loginUser.execute(body);
 
-    this.sendAuthSession(response, StatusCodes.OK, session);
+    this.sendAuthSession(res, StatusCodes.OK, session);
   };
 
-  refresh = async (request: Request, response: Response): Promise<void> => {
+  readonly refresh: RequestHandler = async (req, res): Promise<void> => {
     try {
-      const rawRefreshToken = getRefreshTokenCookie(request);
+      const rawRefreshToken = getRefreshTokenCookie(req);
 
       if (!rawRefreshToken) {
         throw new UnauthenticatedError("Refresh token is required.");
@@ -74,35 +73,35 @@ export class AuthController {
 
       const session = await this.refreshSession.execute(rawRefreshToken);
 
-      this.sendAuthSession(response, StatusCodes.OK, session);
+      this.sendAuthSession(res, StatusCodes.OK, session);
     } catch (error) {
       if (error instanceof UnauthenticatedError) {
-        clearRefreshTokenCookie(response, this.cookieConfig.secure);
+        clearRefreshTokenCookie(res, this.cookieConfig.secure);
       }
 
       throw error;
     }
   };
 
-  logout = async (request: Request, response: Response): Promise<void> => {
-    const rawRefreshToken = getRefreshTokenCookie(request);
+  readonly logout: RequestHandler = async (req, res): Promise<void> => {
+    const rawRefreshToken = getRefreshTokenCookie(req);
 
     await this.logoutUser.execute(rawRefreshToken);
 
-    clearRefreshTokenCookie(response, this.cookieConfig.secure);
+    clearRefreshTokenCookie(res, this.cookieConfig.secure);
 
-    response.status(StatusCodes.NO_CONTENT).send();
+    res.status(StatusCodes.NO_CONTENT).send();
   };
 
-  logoutAll = async (request: Request, response: Response): Promise<void> => {
-    if (!request.user) {
+  readonly logoutAll: RequestHandler = async (req, res): Promise<void> => {
+    if (!req.user) {
       throw new UnauthenticatedError();
     }
 
-    await this.logoutAllSessions.execute(request.user.id);
+    await this.logoutAllSessions.execute(req.user.id);
 
-    clearRefreshTokenCookie(response, this.cookieConfig.secure);
+    clearRefreshTokenCookie(res, this.cookieConfig.secure);
 
-    response.status(StatusCodes.NO_CONTENT).send();
+    res.status(StatusCodes.NO_CONTENT).send();
   };
 }
