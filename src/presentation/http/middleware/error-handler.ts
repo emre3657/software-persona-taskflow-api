@@ -9,6 +9,29 @@ export const errorHandler: ErrorRequestHandler = (
   res,
   _next,
 ): void => {
+  const isMalformedJsonError =
+    error instanceof SyntaxError &&
+    "status" in error &&
+    error.status === StatusCodes.BAD_REQUEST &&
+    "body" in error;
+
+  if (isMalformedJsonError) {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .set("Content-Type", "application/problem+json")
+      .json({
+        type: "urn:taskflow:problem:malformed-json",
+        title: "Malformed JSON",
+        status: StatusCodes.BAD_REQUEST,
+        detail: "The request body contains invalid JSON.",
+        instance: req.originalUrl,
+        code: "MALFORMED_JSON",
+        requestId: req.id,
+      });
+
+    return;
+  }
+
   if (error instanceof ZodError) {
     res
       .status(StatusCodes.BAD_REQUEST)
