@@ -14,7 +14,7 @@ const projectDescriptionSchema = z
 
 export const projectIdParamsSchema = z.object({
   projectId: z.guid({
-    error: "Project ID must be a valid UUID.",
+    error: "Project ID must be a valid GUID.",
   }),
 });
 
