@@ -14,6 +14,7 @@ async function startServer(): Promise<void> {
     const app = createApp({
       authRouter: compositionRoot.authRouter,
       projectRouter: compositionRoot.projectRouter,
+      taskRouter: compositionRoot.taskRouter,
     });
 
     app.listen(env.PORT, () => {

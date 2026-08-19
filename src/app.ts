@@ -16,6 +16,7 @@ import { notFoundHandler } from "./presentation/http/middleware/not-found-handle
 export interface CreateAppOptions {
   authRouter: Router;
   projectRouter: Router;
+  taskRouter: Router;
 }
 
 export function createApp(options: CreateAppOptions): Express {
@@ -36,6 +37,9 @@ export function createApp(options: CreateAppOptions): Express {
   });
 
   app.use("/api/v1/auth", options.authRouter);
+  // Express app.use() uses prefix matching, so mount task routes first
+  // to avoid running project-level middleware for nested task requests.
+  app.use("/api/v1/projects/:projectId/tasks", options.taskRouter);
   app.use("/api/v1/projects", options.projectRouter);
 
   app.use(notFoundHandler);
