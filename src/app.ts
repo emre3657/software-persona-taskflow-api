@@ -9,9 +9,10 @@ import express, {
 
 import { StatusCodes } from "http-status-codes";
 
+import { createOpenApiRouter } from "./presentation/http/openapi/openapi-router.js";
 import { httpLogger } from "./infrastructure/logger/http-logger.js";
-import { errorHandler } from "./presentation/http/middleware/error-handler.js";
 import { notFoundHandler } from "./presentation/http/middleware/not-found-handler.js";
+import { errorHandler } from "./presentation/http/middleware/error-handler.js";
 
 export interface CreateAppOptions {
   authRouter: Router;
@@ -28,6 +29,9 @@ export function createApp(options: CreateAppOptions): Express {
   app.use(httpLogger);
   app.use(express.json({ limit: "1mb" }));
   app.use(cookieParser());
+
+  // Serve the OpenAPI specification and Swagger UI documentation.
+  app.use(createOpenApiRouter());
 
   app.get("/api/v1/health", (_request: Request, response: Response): void => {
     response.status(StatusCodes.OK).json({
