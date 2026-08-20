@@ -128,14 +128,7 @@ export const openApiComponents: OpenAPIV3.ComponentsObject = {
 
     ProjectMember: {
       type: "object",
-      required: [
-        "projectId",
-        "userId",
-        "projectRole",
-        "joinedAt",
-        "username",
-        "email",
-      ],
+      required: ["projectId", "userId", "projectRole", "joinedAt"],
       properties: {
         projectId: {
           type: "string",
@@ -153,16 +146,29 @@ export const openApiComponents: OpenAPIV3.ComponentsObject = {
           type: "string",
           format: "date-time",
         },
-        username: {
-          type: "string",
-        },
-        email: {
-          type: "string",
-          format: "email",
-        },
       },
     },
 
+    ProjectMemberDetails: {
+      allOf: [
+        {
+          $ref: "#/components/schemas/ProjectMember",
+        },
+        {
+          type: "object",
+          required: ["username", "email"],
+          properties: {
+            username: {
+              type: "string",
+            },
+            email: {
+              type: "string",
+              format: "email",
+            },
+          },
+        },
+      ],
+    },
     Task: {
       type: "object",
       required: [
