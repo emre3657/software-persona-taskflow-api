@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { emailSchema, usernameSchema } from "./user-field-schemas.js";
+
 const passwordSchema = z
   .string()
   .min(8, "Password must contain at least 8 characters.")
@@ -9,25 +11,8 @@ const passwordSchema = z
   );
 
 export const registerBodySchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .min(3, "Username must contain at least 3 characters.")
-    .max(50, "Username must not exceed 50 characters.")
-    .regex(/^[a-zA-Z0-9._-]+$/, "Username contains invalid characters."),
-
-  email: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .pipe(
-      z
-        .email({
-          error: "Enter a valid email address.",
-        })
-        .max(254, "Email must be at most 254 characters."),
-    ),
-
+  username: usernameSchema,
+  email: emailSchema,
   password: passwordSchema,
 });
 
