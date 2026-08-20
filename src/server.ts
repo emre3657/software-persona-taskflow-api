@@ -13,6 +13,7 @@ async function startServer(): Promise<void> {
 
     const app = createApp({
       authRouter: compositionRoot.authRouter,
+      userRouter: compositionRoot.userRouter,
       projectRouter: compositionRoot.projectRouter,
       taskRouter: compositionRoot.taskRouter,
     });
