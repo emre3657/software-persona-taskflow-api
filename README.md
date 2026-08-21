@@ -258,8 +258,8 @@ SQL Server must accept TCP connections, and the configured database user must ha
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/emre3657/software-persona-taskflow-api.git
-cd software-persona-taskflow-api
+git clone https://github.com/emre3657/taskflow-sqlserver-api.git
+cd taskflow-sqlserver-api
 ```
 
 ### 2. Install Dependencies
@@ -405,4 +405,4 @@ This project is licensed under the ISC License.
 
 Emre Ekinci
 
-Repository: [software-persona-taskflow-api](https://github.com/emre3657/software-persona-taskflow-api)
+Repository: [taskflow-sqlserver-api](https://github.com/emre3657/taskflow-sqlserver-api)

@@ -1,5 +1,5 @@
 {
-  "name": "taskflow-api",
+  "name": "taskflow-sqlserver-api",
   "version": "1.0.0",
   "description": "A task and project management REST API built with Express, TypeScript, and SQL Server.",
   "private": true,
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/emre3657/software-persona-taskflow-api.git"
+    "url": "git+https://github.com/emre3657/taskflow-sqlserver-api.git"
   },
   "keywords": [
     "nodejs",
@@ -31,9 +31,9 @@
   "author": "Emre Ekinci",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/emre3657/software-persona-taskflow-api/issues"
+    "url": "https://github.com/emre3657/taskflow-sqlserver-api/issues"
   },
-  "homepage": "https://github.com/emre3657/software-persona-taskflow-api#readme",
+  "homepage": "https://github.com/emre3657/taskflow-sqlserver-api#readme",
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
